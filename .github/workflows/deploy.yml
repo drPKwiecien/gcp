@@ -1,0 +1,40 @@
+name: Deploy to Google Cloud Functions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+        project_id: ${{ vars.CICD_GCP_PROJECTID }}
+
+    - name: Authenticate with service account
+      run: |
+        echo '${{ secrets.CICD_GCP }}' | jq '.' > $HOME/gcloud-key.json
+        gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
+
+    - name: Set Project ID
+      run: gcloud config set project ${{ vars.CICD_GCP_PROJECTID }}
+
+    - name: Deploy to Google Cloud Functions
+      run: |
+        gcloud functions deploy hello_world  \
+        --allow-unauthenticated \
+        --gen2 \
+        --runtime python311 \
+        --trigger-http \
+        --entry-point hello_world \
+        --region europe-central2 \
+        --source . \
+        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com      
