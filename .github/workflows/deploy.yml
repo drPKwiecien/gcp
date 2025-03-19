@@ -20,21 +20,23 @@ jobs:
         project_id: ${{ vars.CICD_GCP_PROJECTID }}
 
     - name: Authenticate with service account
-      run: |
-        echo '${{ secrets.CICD_GCP }}' | jq '.' > $HOME/gcloud-key.json
-        gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.CICD_GCP }}
 
     - name: Set Project ID
       run: gcloud config set project ${{ vars.CICD_GCP_PROJECTID }}
 
     - name: Deploy to Google Cloud Functions
       run: |
-        gcloud functions deploy hello_world  \
+        gcloud functions deploy weather_collector  \
         --allow-unauthenticated \
         --gen2 \
         --runtime python311 \
         --trigger-http \
-        --entry-point hello_world \
+        --entry-point weather_collector \
         --region europe-central2 \
         --source . \
-        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com      
+        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com    
+        --set-env-vars OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}
+  
