@@ -37,6 +37,6 @@ jobs:
         --entry-point weather_collector \
         --region europe-central2 \
         --source . \
-        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com    
+        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com \    
         --set-env-vars OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}"
   
