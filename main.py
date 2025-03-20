@@ -6,7 +6,7 @@ from functions_framework import http
 from datetime import datetime
 
 # Load API Key from environment variables
-OPENWEATHER_API_KEY = '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' #os.getenv("OPENWEATHER_API_KEY")
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 LAT = "52.2298"  # Latitude for Warsaw
 LON = "21.0122"  # Longitude for Warsaw
 BQ_TABLE = "datatestingproject2025.warsaw.weather_data"  
