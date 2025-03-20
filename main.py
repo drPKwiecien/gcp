@@ -6,24 +6,19 @@ from functions_framework import http
 from datetime import datetime
 
 # Load API Key from environment variables
-OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+OPENWEATHER_API_KEY = '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' #os.getenv("OPENWEATHER_API_KEY")
 LAT = "52.2298"  # Latitude for Warsaw
 LON = "21.0122"  # Longitude for Warsaw
 BQ_TABLE = "datatestingproject2025.warsaw.weather_data"  
 
-if not OPENWEATHER_API_KEY:
-    raise ValueError("ERROR: OPENWEATHER_API_KEY is not set.")
 
-print(f"🔍 DEBUG - API Key: {OPENWEATHER_API_KEY}") 
+
 
 def get_weather_data():
     """Fetch weather data from OpenWeather API"""
     url = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={OPENWEATHER_API_KEY}&units=metric"
 
     response = requests.get(url)
-
-    print(f"🔍 DEBUG - API Response: {response.text}")  # TEMP: Check API response
-
     
     if response.status_code == 200:
         return response.json()
