@@ -33,9 +33,33 @@ jobs:
         --allow-unauthenticated \
         --gen2 \
         --runtime python311 \
-        --trigger-http \
+        --trigger-topic weather-scheduler \
         --entry-point weather_collector \
         --region europe-central2 \
         --source . \
-        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com 
-  
+        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com \
+        --set-env-vars OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}"
+        
+      - name: Create Pub/Sub Topic (if not exists)
+        run: |
+          gcloud pubsub topics describe weather-scheduler || gcloud pubsub topics create weather-scheduler
+
+      - name: Create Cloud Scheduler Job (if not exists)
+        run: |
+          if gcloud scheduler jobs describe weather-job --location=europe-central2; then
+            echo "Cloud Scheduler job already exists. Updating schedule..."
+            gcloud scheduler jobs update pubsub weather-job \
+              --schedule="15 * * * *" \
+              --time-zone="Europe/Warsaw" \
+              --topic=weather-scheduler \
+              --message-body="{}" \
+              --location=europe-central2
+          else
+            echo "Creating new Cloud Scheduler job..."
+            gcloud scheduler jobs create pubsub weather-job \
+              --schedule="15 * * * *" \
+              --time-zone="Europe/Warsaw" \
+              --topic=weather-scheduler \
+              --message-body="{}" \
+              --location=europe-central2
+          fi

@@ -2,7 +2,7 @@ import requests
 import os
 import json
 from google.cloud import bigquery
-from functions_framework import http
+from functions_framework import cloud_event
 from datetime import datetime
 
 # Load API Key from environment variables
@@ -52,9 +52,9 @@ def insert_into_bigquery(weather_data):
     if errors:
         raise Exception(f"BigQuery Insertion Errors: {errors}")
 
-@http
-def weather_collector(request):
-    """Cloud Function entrypoint"""
+@cloud_event
+def weather_collector(event):
+    """Triggered by Pub/Sub messaget"""
     try:
         weather_data = get_weather_data()
         insert_into_bigquery(weather_data)
