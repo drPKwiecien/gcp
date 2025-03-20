@@ -27,17 +27,7 @@ jobs:
     - name: Set Project ID
       run: gcloud config set project ${{ vars.CICD_GCP_PROJECTID }}
 
-    - name: Deploy to Google Cloud Functions
-      run: |
-        gcloud functions deploy weather_collector  \
-        --allow-unauthenticated \
-        --gen2 \
-        --runtime python311 \
-        --trigger-topic weather-scheduler \
-        --entry-point weather_collector \
-        --region europe-central2 \
-        --source . \
-        --service-account=gcpfunctions-sa@${{ vars.CICD_GCP_PROJECTID }}.iam.gserviceaccount.com 
+
         
     - name: Delete Old Function (if exists)
       run: |
