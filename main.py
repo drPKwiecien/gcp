@@ -58,6 +58,6 @@ def weather_collector(event):
     try:
         weather_data = get_weather_data()
         insert_into_bigquery(weather_data)
-        return "Weather data written to BigQuery successfully", 200
+        return "Success: weather data written to BigQuery successfully", 200
     except Exception as e:
         return str(e), 500
