@@ -38,7 +38,7 @@ jobs:
 
     - name: Deploy New Cloud Function (HTTP)
       run: |
-        gcloud functions get_weather_data \
+        gcloud functions deploy get_weather_data \
           --gen2 \
           --runtime python311 \
           --trigger-http \
