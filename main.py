@@ -15,7 +15,7 @@ TOPIC = 'projects/datatestingproject2025/topics/weather-scheduler'
 
 
 @http
-def get_weather_data():
+def get_weather_data(_):
     """Fetch weather data from OpenWeather API"""
     url = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={OPENWEATHER_API_KEY}&units=metric"
 
